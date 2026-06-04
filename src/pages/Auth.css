@@ -1,0 +1,29 @@
+.auth-page {
+  min-height: calc(100vh - 64px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 2rem 1rem;
+  background: var(--bg);
+}
+.auth-box {
+  width: 100%; max-width: 420px;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.35s ease;
+}
+.auth-logo-wrap { margin-bottom: 1.75rem; }
+.auth-title { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.25rem; }
+.auth-subtitle { color: var(--text2); font-size: 0.875rem; margin-bottom: 1.5rem; }
+.auth-error {
+  background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2);
+  color: #f87171; border-radius: var(--radius-sm);
+  padding: 0.65rem 0.9rem; font-size: 0.825rem; margin-bottom: 1.25rem;
+}
+.auth-footer { text-align: center; margin-top: 1.25rem; font-size: 0.825rem; }
+.role-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+.role-btn {
+  padding: 0.65rem 0.5rem; border-radius: var(--radius-sm);
+  border: 1px solid var(--border2); background: var(--bg3);
+  color: var(--text2); font-size: 0.8rem; font-weight: 600;
+  cursor: pointer; text-align: center;
+}
+.role-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+.role-btn.active { border-color: var(--accent); background: rgba(124,58,237,0.1); color: var(--accent2); }

@@ -1,0 +1,39 @@
+.follow-btn-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.follow-btn {
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.follow-btn.followed {
+  background: rgba(236, 72, 153, 0.15);
+  border-color: #ec4899;
+  color: #ec4899;
+}
+
+.heart-burst {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  pointer-events: none;
+}
+
+.heart-particle {
+  position: absolute;
+  font-size: 0.85rem;
+  animation: heartFloat 0.6s ease forwards;
+  transform-origin: center;
+}
+
+@keyframes heartFloat {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.5);
+  }
+}

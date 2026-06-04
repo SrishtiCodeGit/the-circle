@@ -1,0 +1,33 @@
+/* Reused pill style for wizard */
+.onboard-pill {
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.onboard-pill:hover { border-color: var(--accent); color: var(--accent2); }
+.onboard-pill.active {
+  background: rgba(124,58,237,0.15);
+  border-color: var(--accent2);
+  color: var(--accent2);
+  font-weight: 600;
+}
+
+/* Step slide animations used in wizard */
+.step-exit-left  { opacity: 0; transform: translateX(-24px); transition: opacity 0.28s ease, transform 0.28s ease; }
+.step-exit-right { opacity: 0; transform: translateX(24px);  transition: opacity 0.28s ease, transform 0.28s ease; }
+.onboard-step    { transition: opacity 0.28s ease, transform 0.28s ease; }
+
+.collab-card {
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.collab-card:hover {
+  border-color: rgba(236, 72, 153, 0.3);
+  box-shadow: 0 8px 32px rgba(236, 72, 153, 0.08);
+  transform: translateY(-1px);
+}

@@ -1,0 +1,54 @@
+.activity-ticker {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.ticker-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  flex-shrink: 0;
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.75); }
+}
+
+.ticker-live {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #10b981;
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+}
+
+.ticker-text-wrap {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  height: 1.4em;
+}
+
+.ticker-text {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--text2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.ticker-in  { opacity: 1; transform: translateY(0); }
+.ticker-out { opacity: 0; transform: translateY(-8px); }
