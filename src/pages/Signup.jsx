@@ -30,7 +30,7 @@ export default function Signup() {
       <div className="auth-box card">
         <div style={{ marginBottom: '1.75rem' }}><Logo size={28} textSize="1.05rem" /></div>
         <h1 className="auth-title">Join The Circle</h1>
-        <p className="auth-subtitle">India's community for independent music.</p>
+        <p className="auth-subtitle">The global community for independent music.</p>
 
         {error && <div className="auth-error">{error}</div>}
 

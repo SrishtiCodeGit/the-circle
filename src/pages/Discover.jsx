@@ -63,7 +63,7 @@ export default function Discover() {
     <div className="page">
       <div className="discover-header">
         <h1 className="page-title">Discover Artists</h1>
-        <p className="text-muted text-sm mt-1">Find independent musicians across India</p>
+        <p className="text-muted text-sm mt-1">Find independent musicians around the world</p>
       </div>
 
       <div className="discover-filters">

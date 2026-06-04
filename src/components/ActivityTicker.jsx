@@ -2,16 +2,16 @@ import { useState, useEffect } from 'react';
 import './ActivityTicker.css';
 
 const ACTIVITIES = [
-  'Priya Singh posted a new collab request in Bangalore',
-  'Aryan Mehta applied to Acoustic Set at The Perch Café',
-  'New gig posted: Brand Activation in Delhi — ₹30,000',
-  'Kabir Nair joined The Circle from Hyderabad',
+  'Priya Singh posted a new collab request in Berlin',
+  'Aryan Mehta applied to Acoustic Set at The Loft, Brooklyn',
+  'New gig posted: Brand Activation in Berlin — €1,500',
+  'Kabir Nair joined The Circle from New York',
   "Sneha Roy's profile was viewed 47 times today",
-  'New collab: Sitar Meets Electronic — looking for a flautist',
-  'Rohan Pillai earned ₹12,000 from a gig this week',
-  '3 new artists joined from Chennai today',
-  'Aisha Khan posted: looking for a bassist in Goa',
-  'Collaboration formed: Jazz duo in Hyderabad',
+  'New collab: Strings Meets Electronic — looking for a violinist',
+  'Rohan Pillai earned $800 from a gig this week',
+  '3 new artists joined from Lagos today',
+  'Aisha Khan posted: looking for a bassist in Los Angeles',
+  'Collaboration formed: Jazz duo in New York',
 ];
 
 export default function ActivityTicker() {

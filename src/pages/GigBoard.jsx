@@ -15,8 +15,8 @@ function PostGigModal({ onClose }) {
       <div className="modal" onClick={e => e.stopPropagation()}>
         <div className="modal-title">Post a Gig</div>
         <div className="form-group"><label>Gig Title</label><input placeholder="e.g. Acoustic Set — Café Night" value={form.title} onChange={e => set('title', e.target.value)} /></div>
-        <div className="form-group"><label>Location</label><input placeholder="Mumbai / Remote" value={form.location} onChange={e => set('location', e.target.value)} /></div>
-        <div className="form-group"><label>Budget</label><input placeholder="₹10,000 – ₹15,000" value={form.budget} onChange={e => set('budget', e.target.value)} /></div>
+        <div className="form-group"><label>Location</label><input placeholder="New York / Remote" value={form.location} onChange={e => set('location', e.target.value)} /></div>
+        <div className="form-group"><label>Budget</label><input placeholder="$400 – $600" value={form.budget} onChange={e => set('budget', e.target.value)} /></div>
         <div className="form-group">
           <label>Type</label>
           <select value={form.type} onChange={e => set('type', e.target.value)}>

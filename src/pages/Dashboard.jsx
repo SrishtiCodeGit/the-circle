@@ -2,25 +2,25 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
-import { LayoutDashboard, User, Briefcase, Users, TrendingUp, Edit3, Save, IndianRupee } from 'lucide-react';
+import { LayoutDashboard, User, Briefcase, Users, TrendingUp, Edit3, Save, DollarSign } from 'lucide-react';
 import { GENRES, INSTRUMENTS, CITIES } from '../data/mockData';
 import './Dashboard.css';
 
 const MOCK_EARNINGS = [
-  { label: 'Jun', amount: 8000 },
-  { label: 'May', amount: 12000 },
-  { label: 'Apr', amount: 5500 },
-  { label: 'Mar', amount: 9000 },
-  { label: 'Feb', amount: 3000 },
-  { label: 'Jan', amount: 6500 },
+  { label: 'Jun', amount: 800 },
+  { label: 'May', amount: 1200 },
+  { label: 'Apr', amount: 550 },
+  { label: 'Mar', amount: 900 },
+  { label: 'Feb', amount: 300 },
+  { label: 'Jan', amount: 650 },
 ];
 const TOTAL = MOCK_EARNINGS.reduce((s, e) => s + e.amount, 0);
 const MAX = Math.max(...MOCK_EARNINGS.map(e => e.amount));
 
 const MOCK_APPLICATIONS = [
-  { id: 1, gig: 'Acoustic Set — Rooftop Cafe Mumbai', venue: 'The Perch Café', budget: '₹8,000–₹12,000', stage: 'Applied', date: 'Jun 10' },
-  { id: 2, gig: 'Session Drummer — Studio Recording', venue: 'Wavelength Studios', budget: '₹15,000', stage: 'Shortlisted', date: 'Jun 8' },
-  { id: 3, gig: 'Brand Activation — Tech Summit Delhi', venue: 'Pixel Events', budget: '₹25,000–₹35,000', stage: 'Confirmed', date: 'Jun 5' },
+  { id: 1, gig: 'Acoustic Set — Rooftop Bar, Brooklyn', venue: 'The Loft Venue', budget: '$400–$600', stage: 'Applied', date: 'Jun 10' },
+  { id: 2, gig: 'Session Drummer — Studio Recording', venue: 'Wavelength Studios', budget: '$800', stage: 'Shortlisted', date: 'Jun 8' },
+  { id: 3, gig: 'Brand Activation — Tech Summit Berlin', venue: 'Pixel Events', budget: '€1,200–€1,800', stage: 'Confirmed', date: 'Jun 5' },
 ];
 
 const PIPELINE_COLS = [
@@ -60,7 +60,7 @@ function EarningsChart() {
     <div className="earnings-chart">
       {MOCK_EARNINGS.slice().reverse().map(e => (
         <div key={e.label} className="bar-col">
-          <div className="bar-label-top text-xs text-muted">₹{(e.amount / 1000).toFixed(0)}K</div>
+          <div className="bar-label-top text-xs text-muted">${e.amount}</div>
           <div className="bar-wrap">
             <div className="bar" style={{ height: `${(e.amount / MAX) * 100}%` }} />
           </div>
@@ -144,8 +144,8 @@ export default function Dashboard() {
                 <div className="stat-card-label">Followers</div>
               </div>
               <div className="card stat-card">
-                <div className="stat-card-icon green"><IndianRupee size={18} /></div>
-                <div className="stat-card-val">₹0</div>
+                <div className="stat-card-icon green"><DollarSign size={18} /></div>
+                <div className="stat-card-val">$0</div>
                 <div className="stat-card-label">Total Earned</div>
               </div>
               <div className="card stat-card">
@@ -269,12 +269,12 @@ export default function Dashboard() {
             <div className="grid-2 mb-2">
               <div className="card">
                 <div className="text-muted text-sm mb-1">Total Earned (Demo)</div>
-                <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--green)' }}>₹{TOTAL.toLocaleString('en-IN')}</div>
+                <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--green)' }}>${TOTAL.toLocaleString()}</div>
                 <div className="text-xs text-muted mt-1">Last 6 months</div>
               </div>
               <div className="card">
                 <div className="text-muted text-sm mb-1">This Month</div>
-                <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--accent2)' }}>₹{MOCK_EARNINGS[0].amount.toLocaleString('en-IN')}</div>
+                <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--accent2)' }}>${MOCK_EARNINGS[0].amount.toLocaleString()}</div>
                 <div className="text-xs text-muted mt-1">Jun 2026</div>
               </div>
             </div>

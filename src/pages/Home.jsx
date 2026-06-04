@@ -9,7 +9,7 @@ import { MOCK_ARTISTS } from '../data/mockData';
 import './Home.css';
 
 const FEATURES = [
-  { icon: <Compass size={20}/>, title:'Artist Discovery',      desc:'Find independent musicians across India by genre, city, and instrument.',         color:'#7c3aed' },
+  { icon: <Compass size={20}/>, title:'Artist Discovery',      desc:'Find independent musicians worldwide by genre, city, and instrument.',           color:'#7c3aed' },
   { icon: <Users   size={20}/>, title:'Collaboration Matching',desc:'Post or respond to collab requests — build something new together.',               color:'#ec4899' },
   { icon: <Briefcase size={20}/>,title:'Gig Board',            desc:'Browse paid gig opportunities or post your own — venues to brand activations.',    color:'#f97316' },
   { icon: <Shield  size={20}/>, title:'IP Ownership',          desc:'Split-sheet agreements and licensing terms. Creator-first, always.',               color:'#10b981' },
@@ -24,9 +24,9 @@ const STEPS = [
 ];
 
 const TESTIMONIALS = [
-  { name:'Aryan Mehta', role:'Indie Folk Artist, Mumbai',       quote:'The Circle connected me with a producer I never would have found otherwise. We made an EP in 3 weeks.', initials:'AM', color:'#6d28d9', avatar:'https://i.pravatar.cc/150?img=11' },
-  { name:'Priya Singh',  role:'Electronic Producer, Bangalore', quote:'Got 3 paid gigs in my first month. The platform actually understands what independent artists need.',  initials:'PS', color:'#db2777', avatar:'https://i.pravatar.cc/150?img=47' },
-  { name:'Kabir Nair',   role:'Jazz Drummer, Hyderabad',        quote:'Finally a platform built for serious musicians, not just influencers. Riyaaz is the word.',           initials:'KN', color:'#059669', avatar:'https://i.pravatar.cc/150?img=12' },
+  { name:'Aryan Mehta', role:'Indie Folk Artist, London',       quote:'The Circle connected me with a producer I never would have found otherwise. We made an EP in 3 weeks.', initials:'AM', color:'#6d28d9', avatar:'https://i.pravatar.cc/150?img=11' },
+  { name:'Priya Singh',  role:'Electronic Producer, Berlin',    quote:'Got 3 paid gigs in my first month. The platform actually understands what independent artists need.',  initials:'PS', color:'#db2777', avatar:'https://i.pravatar.cc/150?img=47' },
+  { name:'Kabir Nair',   role:'Jazz Drummer, New York',         quote:'Finally a platform built for serious musicians, not just influencers. This is the real deal.',        initials:'KN', color:'#059669', avatar:'https://i.pravatar.cc/150?img=12' },
 ];
 
 // spotlight artists: a2 (Priya), a1 (Aryan), a4 (Sneha)
@@ -114,16 +114,16 @@ export default function Home() {
             </div>
 
             <div className="hero-badge">
-              <Zap size={11} /> India's Independent Music Community
+              <Zap size={11} /> The Global Independent Music Community
             </div>
 
             <h1 className="hero-title">
-              Where Indian Artists<br />
+              Where Artists<br />
               <span className="gradient-text">Find Their People</span>
             </h1>
 
             <p className="hero-sub">
-              The Circle connects independent musicians across India — for discovery, collaboration, gigs, and sustainable income. No gatekeepers. Just artists.
+              The Circle connects independent musicians worldwide — for discovery, collaboration, gigs, and sustainable income. No gatekeepers. Just artists.
             </p>
 
             <div className="hero-cta">
@@ -172,11 +172,11 @@ export default function Home() {
             <div className="stat-label">Artists</div>
           </div>
           <div className="stat-item">
-            <div className="stat-value"><StatCounter target={180} suffix="+" /></div>
-            <div className="stat-label">Cities</div>
+            <div className="stat-value"><StatCounter target={50} suffix="+" /></div>
+            <div className="stat-label">Countries</div>
           </div>
           <div className="stat-item">
-            <div className="stat-value">₹<StatCounter target={12} suffix="L+" /></div>
+            <div className="stat-value">$<StatCounter target={2} suffix="M+" /></div>
             <div className="stat-label">Paid Out</div>
           </div>
           <div className="stat-item">
@@ -255,11 +255,11 @@ export default function Home() {
         <div className="cta-glow" />
         <AnimatedWave height={36} color="rgba(168,85,247,0.35)" />
         <h2 className="cta-title mt-3">
-          The Indian music scene is fragmented.<br />
+          The music world is fragmented.<br />
           <span className="gradient-text">You don't have to be.</span>
         </h2>
         <p className="text-muted mt-2 mb-3" style={{ fontSize:'0.95rem' }}>
-          Join thousands of artists already building on The Circle.
+          Join artists from 50+ countries already building on The Circle.
         </p>
         <Link to="/signup" className="btn btn-primary" style={{ fontSize:'0.95rem', padding:'0.8rem 2rem' }}>
           Join The Circle — It's Free <ArrowRight size={15} />
