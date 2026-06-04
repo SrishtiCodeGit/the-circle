@@ -5,6 +5,7 @@ import { MOCK_ARTISTS } from '../data/mockData';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { usePlayer } from '../context/PlayerContext';
+import LeadCaptureModal from '../components/LeadCaptureModal';
 import './ArtistProfile.css';
 
 const COVER_COLORS = [
@@ -106,6 +107,7 @@ export default function ArtistProfile() {
 
   const [followed, setFollowed] = useState(false);
   const [burst, setBurst] = useState(false);
+  const [showLead, setShowLead] = useState(false);
 
   if (!artist) {
     return (
@@ -277,8 +279,17 @@ export default function ArtistProfile() {
         {!currentUser && (
           <div className="card mt-2" style={{ textAlign: 'center', background: 'rgba(124,58,237,0.08)' }}>
             <p className="text-muted mb-2">Join The Circle to follow artists, send collab requests, and more.</p>
-            <Link to="/signup" className="btn btn-primary">Join Free</Link>
+            <button className="btn btn-primary" onClick={() => setShowLead(true)}>Follow {artist.displayName}</button>
           </div>
+        )}
+
+        {showLead && (
+          <LeadCaptureModal
+            source={`follow-${artist.id}`}
+            heading={`Follow ${artist.displayName}`}
+            subheading="Get notified when they post new music, gigs, and collab requests."
+            onClose={() => setShowLead(false)}
+          />
         )}
       </div>
     </>

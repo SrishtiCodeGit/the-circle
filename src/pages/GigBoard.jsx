@@ -6,6 +6,7 @@ import { useToast } from '../context/ToastContext';
 import { db } from '../firebase';
 import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
+import LeadCaptureModal from '../components/LeadCaptureModal';
 import './GigBoard.css';
 
 const GIG_TYPES = ['Live Performance', 'Studio Session', 'Brand Activation', 'Remote Collab'];
@@ -100,6 +101,7 @@ export default function GigBoard() {
   const [typeFilter, setTypeFilter] = useState('');
   const [cityFilter, setCityFilter] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [showLead, setShowLead] = useState(false);
   const [liveGigs, setLiveGigs] = useState([]);
   const [loadingGigs, setLoadingGigs] = useState(true);
 
@@ -180,7 +182,7 @@ export default function GigBoard() {
                 <span className="flex-center gap-05 text-xs text-muted"><Users size={11} /> {gig.applicants || 0} applied</span>
                 {currentUser
                   ? <button className="btn btn-green" style={{ fontSize: '0.8rem', padding: '0.4rem 1rem' }}>Apply Now</button>
-                  : <Link to="/signup" className="btn btn-green" style={{ fontSize: '0.8rem', padding: '0.4rem 1rem' }}>Apply Now</Link>
+                  : <button className="btn btn-green" style={{ fontSize: '0.8rem', padding: '0.4rem 1rem' }} onClick={() => setShowLead(true)}>Apply Now</button>
                 }
               </div>
             </div>
@@ -196,6 +198,14 @@ export default function GigBoard() {
       )}
 
       {showModal && <PostGigModal onClose={() => setShowModal(false)} />}
+      {showLead && (
+        <LeadCaptureModal
+          source="gig-apply"
+          heading="Apply for this gig"
+          subheading="Create your free profile to apply — takes 30 seconds."
+          onClose={() => setShowLead(false)}
+        />
+      )}
     </div>
   );
 }

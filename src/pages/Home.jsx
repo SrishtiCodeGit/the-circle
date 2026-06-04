@@ -1,11 +1,14 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Compass, Briefcase, Users, Star, TrendingUp, Shield, ArrowRight, Zap, MapPin } from 'lucide-react';
+import { Compass, Briefcase, Users, Star, TrendingUp, Shield, ArrowRight, Zap, MapPin, CheckCircle } from 'lucide-react';
 import AnimatedWave from '../components/AnimatedWave';
 import ActivityTicker from '../components/ActivityTicker';
 import Logo from '../components/Logo';
 import { useReveal } from '../hooks/useReveal';
 import { useCounter } from '../hooks/useCounter';
 import { MOCK_ARTISTS } from '../data/mockData';
+import { db } from '../firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import './Home.css';
 
 const FEATURES = [
@@ -36,6 +39,70 @@ const SPOTLIGHT_STYLES = [
   { top: 150,  left: 70,  rotate:  1, zIndex: 2, animDelay: '1.3s' },
   { top: 295,  left: 20,  rotate: -1, zIndex: 1, animDelay: '2.6s' },
 ];
+
+function WaitlistBar() {
+  const [email, setEmail] = useState('');
+  const [role, setRole] = useState('');
+  const [done, setDone] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (!email.includes('@')) return;
+    setLoading(true);
+    try {
+      await addDoc(collection(db, 'leads'), {
+        email,
+        role: role || 'Not specified',
+        source: 'homepage-waitlist',
+        createdAt: serverTimestamp(),
+      });
+      setDone(true);
+    } catch {
+      setDone(true);
+    }
+    setLoading(false);
+  }
+
+  return (
+    <section className="waitlist-section">
+      <div className="waitlist-inner">
+        {done ? (
+          <div className="waitlist-done">
+            <CheckCircle size={22} style={{ color: '#10b981' }} />
+            <span>You're on the list! We'll be in touch soon.</span>
+          </div>
+        ) : (
+          <>
+            <div className="waitlist-copy">
+              <span className="waitlist-label">Early Access</span>
+              <p>Be among the first artists on The Circle.</p>
+            </div>
+            <form className="waitlist-form" onSubmit={handleSubmit}>
+              <select value={role} onChange={e => setRole(e.target.value)}>
+                <option value="">I'm a…</option>
+                <option>Artist</option>
+                <option>Band</option>
+                <option>Venue / Organiser</option>
+                <option>Label / Manager</option>
+              </select>
+              <input
+                type="email"
+                placeholder="your@email.com"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+              />
+              <button type="submit" className="btn btn-primary" disabled={loading}>
+                {loading ? '…' : 'Notify Me'}
+              </button>
+            </form>
+          </>
+        )}
+      </div>
+    </section>
+  );
+}
 
 function StatCounter({ target, prefix='', suffix='' }) {
   const [count, ref] = useCounter(target);
@@ -249,6 +316,9 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* ── Waitlist ── */}
+      <WaitlistBar />
 
       {/* ── CTA ── */}
       <section className="cta-section">

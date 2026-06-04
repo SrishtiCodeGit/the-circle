@@ -6,6 +6,7 @@ import { useToast } from '../context/ToastContext';
 import { db } from '../firebase';
 import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
+import LeadCaptureModal from '../components/LeadCaptureModal';
 import './Collaborations.css';
 
 const PROJECT_TYPES = ['Single', 'EP', 'Album', 'Live Band', 'Session Work', 'Podcast/Score', 'Other'];
@@ -190,6 +191,7 @@ export default function Collaborations() {
   const { currentUser } = useAuth();
   const [genreFilter, setGenreFilter] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [showLead, setShowLead] = useState(false);
   const [liveCollabs, setLiveCollabs] = useState([]);
   const [loadingCollabs, setLoadingCollabs] = useState(true);
 
@@ -261,7 +263,7 @@ export default function Collaborations() {
                 <span className="text-xs text-muted">{collab.compensation}</span>
                 {currentUser
                   ? <button className="btn btn-outline" style={{ fontSize: '0.8rem', padding: '0.4rem 1rem' }}>Express Interest</button>
-                  : <Link to="/signup" className="btn btn-outline" style={{ fontSize: '0.8rem', padding: '0.4rem 1rem' }}>Express Interest</Link>
+                  : <button className="btn btn-outline" style={{ fontSize: '0.8rem', padding: '0.4rem 1rem' }} onClick={() => setShowLead(true)}>Express Interest</button>
                 }
               </div>
             </div>
@@ -277,6 +279,14 @@ export default function Collaborations() {
       )}
 
       {showModal && <PostCollabModal onClose={() => setShowModal(false)} />}
+      {showLead && (
+        <LeadCaptureModal
+          source="collab-interest"
+          heading="Express your interest"
+          subheading="Drop your email and we'll connect you with this artist."
+          onClose={() => setShowLead(false)}
+        />
+      )}
     </div>
   );
 }
