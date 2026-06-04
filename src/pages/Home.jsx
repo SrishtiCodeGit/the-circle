@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
-import { Compass, Briefcase, Users, Star, TrendingUp, Shield, ArrowRight, Zap } from 'lucide-react';
+import { Compass, Briefcase, Users, Star, TrendingUp, Shield, ArrowRight, Zap, MapPin } from 'lucide-react';
 import AnimatedWave from '../components/AnimatedWave';
 import ActivityTicker from '../components/ActivityTicker';
+import Logo from '../components/Logo';
 import { useReveal } from '../hooks/useReveal';
 import { useCounter } from '../hooks/useCounter';
+import { MOCK_ARTISTS } from '../data/mockData';
 import './Home.css';
 
 const FEATURES = [
@@ -22,9 +24,17 @@ const STEPS = [
 ];
 
 const TESTIMONIALS = [
-  { name:'Aryan Mehta', role:'Indie Folk Artist, Mumbai',    quote:'The Circle connected me with a producer I never would have found otherwise. We made an EP in 3 weeks.', initials:'AM', color:'#6d28d9' },
-  { name:'Priya Singh',  role:'Electronic Producer, Bangalore', quote:'Got 3 paid gigs in my first month. The platform actually understands what independent artists need.', initials:'PS', color:'#db2777' },
-  { name:'Kabir Nair',   role:'Jazz Drummer, Hyderabad',     quote:'Finally a platform built for serious musicians, not just influencers. Riyaaz is the word.', initials:'KN', color:'#059669' },
+  { name:'Aryan Mehta', role:'Indie Folk Artist, Mumbai',       quote:'The Circle connected me with a producer I never would have found otherwise. We made an EP in 3 weeks.', initials:'AM', color:'#6d28d9', avatar:'https://i.pravatar.cc/150?img=11' },
+  { name:'Priya Singh',  role:'Electronic Producer, Bangalore', quote:'Got 3 paid gigs in my first month. The platform actually understands what independent artists need.',  initials:'PS', color:'#db2777', avatar:'https://i.pravatar.cc/150?img=47' },
+  { name:'Kabir Nair',   role:'Jazz Drummer, Hyderabad',        quote:'Finally a platform built for serious musicians, not just influencers. Riyaaz is the word.',           initials:'KN', color:'#059669', avatar:'https://i.pravatar.cc/150?img=12' },
+];
+
+// spotlight artists: a2 (Priya), a1 (Aryan), a4 (Sneha)
+const SPOTLIGHT_IDS = ['a2', 'a1', 'a4'];
+const SPOTLIGHT_STYLES = [
+  { top: 10,   left: 30,  rotate: -3, zIndex: 1, animDelay: '0s' },
+  { top: 150,  left: 70,  rotate:  1, zIndex: 2, animDelay: '1.3s' },
+  { top: 295,  left: 20,  rotate: -1, zIndex: 1, animDelay: '2.6s' },
 ];
 
 function StatCounter({ target, prefix='', suffix='' }) {
@@ -32,10 +42,59 @@ function StatCounter({ target, prefix='', suffix='' }) {
   return <span ref={ref}>{prefix}{count.toLocaleString('en-IN')}{suffix}</span>;
 }
 
+function SpotlightCard({ artist, style, animDelay }) {
+  const genreColorMap = {
+    'Folk': '#7c3aed', 'Indie': '#7c3aed',
+    'Electronic': '#06b6d4', 'Ambient': '#06b6d4',
+    'Jazz': '#f59e0b', 'Fusion': '#f59e0b',
+    'Hip-Hop': '#ec4899', 'R&B': '#ec4899',
+    'Classical': '#10b981',
+    'Metal': '#ef4444', 'Rock': '#ef4444',
+  };
+  return (
+    <div
+      className="spotlight-card"
+      style={{
+        top: style.top,
+        left: style.left,
+        transform: `rotate(${style.rotate}deg)`,
+        zIndex: style.zIndex,
+        animationDelay: animDelay,
+      }}
+    >
+      <div className="spotlight-card-inner">
+        {artist.avatar ? (
+          <img
+            src={artist.avatar}
+            alt={artist.displayName}
+            style={{ width: 60, height: 60, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--border2)', flexShrink: 0 }}
+          />
+        ) : (
+          <div className="avatar" style={{ width: 60, height: 60, fontSize: 20 }}>{artist.initials}</div>
+        )}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontWeight: 700, fontSize: '0.9rem', letterSpacing: '-0.01em' }}>{artist.displayName}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.75rem', color: 'var(--text2)', marginTop: 2 }}>
+            <MapPin size={10} /> {artist.location}
+          </div>
+          <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap', marginTop: '0.4rem' }}>
+            {artist.genres.map(g => (
+              <span key={g} style={{ fontSize: '0.65rem', padding: '0.1rem 0.45rem', borderRadius: 999, background: `${genreColorMap[g] || '#7c3aed'}22`, color: genreColorMap[g] || '#7c3aed', fontWeight: 600 }}>{g}</span>
+            ))}
+            {artist.open && <span style={{ fontSize: '0.65rem', padding: '0.1rem 0.45rem', borderRadius: 999, background: 'rgba(16,185,129,0.15)', color: '#10b981', fontWeight: 600 }}>Open</span>}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const featuresRef = useReveal();
   const stepsRef    = useReveal();
   const testimonialsRef = useReveal();
+
+  const spotlightArtists = SPOTLIGHT_IDS.map(id => MOCK_ARTISTS.find(a => a.id === id));
 
   return (
     <div className="home">
@@ -47,39 +106,66 @@ export default function Home() {
           <div className="hero-glow-3" />
         </div>
 
-        <div className="hero-badge">
-          <Zap size={11} /> India's Independent Music Community
+        <div className="hero-inner">
+          {/* Left column */}
+          <div className="hero-left">
+            <div style={{ opacity: 0.6, marginBottom: '1.5rem' }}>
+              <Logo size={28} />
+            </div>
+
+            <div className="hero-badge">
+              <Zap size={11} /> India's Independent Music Community
+            </div>
+
+            <h1 className="hero-title">
+              Where Indian Artists<br />
+              <span className="gradient-text">Find Their People</span>
+            </h1>
+
+            <p className="hero-sub">
+              The Circle connects independent musicians across India — for discovery, collaboration, gigs, and sustainable income. No gatekeepers. Just artists.
+            </p>
+
+            <div className="hero-cta">
+              <Link to="/signup" className="btn btn-primary hero-btn-main">
+                Start for Free <ArrowRight size={15} />
+              </Link>
+              <Link to="/discover" className="btn btn-outline hero-btn-sec">
+                Explore Artists
+              </Link>
+            </div>
+
+            {/* Live animated waveform */}
+            <div className="hero-wave-wrap">
+              <AnimatedWave height={52} color="var(--accent2)" />
+            </div>
+
+            {/* Live Ticker */}
+            <div style={{ maxWidth: 520, width: '100%' }}>
+              <ActivityTicker />
+            </div>
+          </div>
+
+          {/* Right column — spotlight */}
+          <div className="hero-right">
+            <div className="hero-spotlight">
+              {/* Large faded circle watermark */}
+              <div className="spotlight-watermark" />
+              {spotlightArtists.map((artist, i) => (
+                <SpotlightCard
+                  key={artist.id}
+                  artist={artist}
+                  style={SPOTLIGHT_STYLES[i]}
+                  animDelay={SPOTLIGHT_STYLES[i].animDelay}
+                />
+              ))}
+            </div>
+          </div>
         </div>
+      </section>
 
-        <h1 className="hero-title">
-          Where Indian Artists<br />
-          <span className="gradient-text">Find Their People</span>
-        </h1>
-
-        <p className="hero-sub">
-          The Circle connects independent musicians across India — for discovery, collaboration, gigs, and sustainable income. No gatekeepers. Just artists.
-        </p>
-
-        <div className="hero-cta">
-          <Link to="/signup" className="btn btn-primary hero-btn-main">
-            Start for Free <ArrowRight size={15} />
-          </Link>
-          <Link to="/discover" className="btn btn-outline hero-btn-sec">
-            Explore Artists
-          </Link>
-        </div>
-
-        {/* Live animated waveform */}
-        <div className="hero-wave-wrap">
-          <AnimatedWave height={52} color="var(--accent2)" />
-        </div>
-
-        {/* Live Ticker */}
-        <div style={{ maxWidth: 560, margin: '0 auto 1rem', width: '100%' }}>
-          <ActivityTicker />
-        </div>
-
-        {/* Stats */}
+      {/* ── Stats strip ── */}
+      <section className="stats-strip">
         <div className="stats-row">
           <div className="stat-item">
             <div className="stat-value"><StatCounter target={2400} suffix="+" /></div>
@@ -149,9 +235,11 @@ export default function Home() {
               <div className="testimonial-quote">"</div>
               <p className="testimonial-text">"{t.quote}"</p>
               <div className="testimonial-author">
-                <div className="avatar" style={{ width:38,height:38,fontSize:13,background:`linear-gradient(135deg,${t.color}99,${t.color})`,border:'2px solid var(--border2)' }}>
-                  {t.initials}
-                </div>
+                <img
+                  src={t.avatar}
+                  alt={t.name}
+                  style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--border2)', flexShrink: 0 }}
+                />
                 <div>
                   <div className="fw-700 text-sm">{t.name}</div>
                   <div className="text-xs text-muted">{t.role}</div>
