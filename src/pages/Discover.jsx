@@ -4,7 +4,7 @@ import { Search, MapPin, Music, Users } from 'lucide-react';
 import { MOCK_ARTISTS, GENRES, CITIES } from '../data/mockData';
 import './Discover.css';
 
-function AvatarCircle({ artist, size = 52 }) {
+function AvatarCircle({ artist, size = 64 }) {
   const colors = [
     ['#3b0764', '#6d28d9'], ['#1e1b4b', '#4338ca'],
     ['#701a75', '#a21caf'], ['#064e3b', '#059669'],
@@ -12,6 +12,24 @@ function AvatarCircle({ artist, size = 52 }) {
   ];
   const idx = artist.id.charCodeAt(1) % colors.length;
   const [from, to] = colors[idx];
+
+  if (artist.avatar) {
+    return (
+      <img
+        src={artist.avatar}
+        alt={artist.displayName}
+        style={{
+          width: size,
+          height: size,
+          borderRadius: '50%',
+          objectFit: 'cover',
+          border: '2px solid var(--border2)',
+          flexShrink: 0,
+        }}
+      />
+    );
+  }
+
   return (
     <div
       className="avatar"
@@ -81,8 +99,18 @@ export default function Discover() {
       <p className="result-count">{filtered.length} artist{filtered.length !== 1 ? 's' : ''} found</p>
 
       <div className="grid-3" key={genre + city}>
-        {filtered.map(artist => (
-          <Link to={`/artist/${artist.id}`} key={artist.id} className="card artist-card">
+        {filtered.map(artist => {
+          const genreColorMap = {
+            'Folk': '#7c3aed', 'Indie': '#7c3aed',
+            'Electronic': '#06b6d4', 'Ambient': '#06b6d4',
+            'Jazz': '#f59e0b', 'Fusion': '#f59e0b',
+            'Hip-Hop': '#ec4899', 'R&B': '#ec4899',
+            'Classical': '#10b981',
+            'Metal': '#ef4444', 'Rock': '#ef4444',
+          };
+          const topColor = genreColorMap[artist.genres[0]] || '#7c3aed';
+          return (
+          <Link to={`/artist/${artist.id}`} key={artist.id} className="card artist-card" style={{ borderTop: `3px solid ${topColor}` }}>
             <div className="artist-card-top">
               <AvatarCircle artist={artist} />
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -112,7 +140,8 @@ export default function Discover() {
               </span>
             </div>
           </Link>
-        ))}
+          );
+        })}
       </div>
 
       {filtered.length === 0 && (

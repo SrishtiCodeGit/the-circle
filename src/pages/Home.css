@@ -2,11 +2,11 @@
 
 /* ── Hero ── */
 .hero-section {
-  position: relative; text-align: center;
-  padding: 6rem 2rem 4rem;
-  max-width: 820px; margin: 0 auto;
+  position: relative;
+  padding: 5rem 2rem 3rem;
   overflow: hidden;
 }
+
 .hero-bg { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
 .hero-glow-1 {
   position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
@@ -26,7 +26,39 @@
   background: radial-gradient(ellipse, rgba(249,115,22,0.07) 0%, transparent 70%);
   filter: blur(50px); animation: float 8s ease-in-out infinite 2s;
 }
-.hero-section > * { position: relative; z-index: 1; }
+
+/* Two-column hero layout */
+.hero-inner {
+  position: relative; z-index: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 3rem;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.hero-right {
+  width: 420px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 900px) {
+  .hero-right { display: none; }
+  .hero-left { align-items: center; text-align: center; }
+  .hero-cta { justify-content: center; }
+  .hero-sub { margin-left: auto; margin-right: auto; }
+}
 
 .hero-badge {
   display: inline-flex; align-items: center; gap: 0.45rem;
@@ -39,7 +71,7 @@
 }
 
 .hero-title {
-  font-size: clamp(2.6rem, 7vw, 4.2rem);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
   font-weight: 900; line-height: 1.08; margin-bottom: 1.25rem;
   letter-spacing: -0.04em;
   animation: slideUp 0.7s ease 0.2s both;
@@ -47,12 +79,12 @@
 
 .hero-sub {
   font-size: 1.05rem; color: var(--text2); line-height: 1.75;
-  max-width: 520px; margin: 0 auto 2.25rem; font-weight: 400;
+  max-width: 520px; margin-bottom: 2.25rem; font-weight: 400;
   animation: slideUp 0.7s ease 0.3s both;
 }
 
 .hero-cta {
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: center;
   gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2.5rem;
   animation: slideUp 0.7s ease 0.4s both;
 }
@@ -61,17 +93,73 @@
 
 /* Live waveform */
 .hero-wave-wrap {
-  margin: 0 auto 2.5rem;
   max-width: 400px;
+  width: 100%;
   opacity: 0.8;
+  margin-bottom: 1rem;
   animation: fadeIn 1s ease 0.6s both;
 }
 
-/* Stats */
+/* ── Spotlight panel ── */
+.hero-spotlight {
+  position: relative;
+  height: 420px;
+  width: 100%;
+}
+
+.spotlight-watermark {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border: 2px solid rgba(168, 85, 247, 0.12);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.spotlight-card {
+  position: absolute;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  width: 280px;
+  animation: float 4s ease-in-out infinite;
+  transition: box-shadow 0.2s;
+}
+
+.spotlight-card:hover {
+  box-shadow: 0 12px 40px rgba(124, 58, 237, 0.2);
+}
+
+.spotlight-card-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(var(--rotate, 0deg)); }
+  50%       { transform: translateY(-10px) rotate(var(--rotate, 0deg)); }
+}
+
+/* ── Stats strip ── */
+.stats-strip {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+  padding: 1.5rem 0;
+}
+
 .stats-row {
   display: flex; align-items: center; justify-content: center;
-  gap: 0; padding-top: 2rem;
-  border-top: 1px solid var(--border); flex-wrap: wrap;
+  gap: 0; flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
   animation: fadeIn 0.8s ease 0.7s both;
 }
 .stat-item { text-align: center; padding: 0.5rem 2rem; border-right: 1px solid var(--border); }

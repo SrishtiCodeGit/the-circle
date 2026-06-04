@@ -1,3 +1,35 @@
+/* ── Profile Cover ── */
+.profile-cover {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+}
+
+.profile-cover-blur {
+  position: absolute;
+  inset: -20px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(30px) brightness(0.35);
+}
+
+.profile-avatar-wrap {
+  position: absolute;
+  bottom: -50px;
+  left: 2rem;
+}
+
+.profile-avatar-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--bg);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  display: block;
+}
+
+/* ── Follow button ── */
 .follow-btn-wrap {
   position: relative;
   display: inline-flex;

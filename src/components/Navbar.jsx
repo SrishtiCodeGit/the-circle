@@ -25,7 +25,7 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-inner">
-        <Link to="/"><Logo size={30} textSize="1.05rem" /></Link>
+        <Link to="/"><Logo size={34} textSize="1.05rem" /></Link>
 
         <div className="navbar-links">
           {navLinks.map(({ to, label, icon }) => (
