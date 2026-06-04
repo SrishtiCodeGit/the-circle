@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, MapPin, Music, Users } from 'lucide-react';
-import { MOCK_ARTISTS, GENRES, CITIES } from '../data/mockData';
+import { MOCK_ARTISTS, GENRES, CITIES, INSTRUMENTS } from '../data/mockData';
 import './Discover.css';
 
 function AvatarCircle({ artist, size = 64 }) {
@@ -50,13 +50,15 @@ export default function Discover() {
   const [search, setSearch] = useState('');
   const [genre, setGenre] = useState('');
   const [city, setCity] = useState('');
+  const [instrument, setInstrument] = useState('');
 
   const filtered = MOCK_ARTISTS.filter(a => {
     const q = search.toLowerCase();
     const matchSearch = !q || a.displayName.toLowerCase().includes(q) || a.bio.toLowerCase().includes(q);
     const matchGenre = !genre || a.genres.includes(genre);
     const matchCity = !city || a.location === city;
-    return matchSearch && matchGenre && matchCity;
+    const matchInstrument = !instrument || a.instruments.includes(instrument);
+    return matchSearch && matchGenre && matchCity && matchInstrument;
   });
 
   return (
@@ -79,6 +81,10 @@ export default function Discover() {
           <option value="">All Cities</option>
           {CITIES.map(c => <option key={c}>{c}</option>)}
         </select>
+        <select value={instrument} onChange={e => setInstrument(e.target.value)}>
+          <option value="">All Instruments</option>
+          {INSTRUMENTS.map(i => <option key={i}>{i}</option>)}
+        </select>
       </div>
 
       {/* Genre pill row */}
@@ -98,7 +104,7 @@ export default function Discover() {
 
       <p className="result-count">{filtered.length} artist{filtered.length !== 1 ? 's' : ''} found</p>
 
-      <div className="grid-3" key={genre + city}>
+      <div className="grid-3" key={genre + city + instrument}>
         {filtered.map(artist => {
           const genreColorMap = {
             'Folk': '#7c3aed', 'Indie': '#7c3aed',

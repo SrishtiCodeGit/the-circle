@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MapPin, Music, Users, Heart, Share2, ExternalLink, Disc } from 'lucide-react';
+import { MapPin, Music, Users, Heart, Share2, ExternalLink, Disc, Link2 } from 'lucide-react';
 import { MOCK_ARTISTS } from '../data/mockData';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -57,6 +57,45 @@ const HEART_OFFSETS = [
   { x: 12,  delay: 0.2 },
   { x: 5,   delay: 0.08 },
 ];
+
+function MusicEmbed({ url }) {
+  let embedUrl = url;
+  // Convert Spotify share URL to embed URL
+  if (url.includes('open.spotify.com') && !url.includes('/embed/')) {
+    embedUrl = url.replace('open.spotify.com/', 'open.spotify.com/embed/');
+  }
+  // Convert YouTube watch URL to embed URL
+  if (url.includes('youtube.com/watch')) {
+    const id = new URL(url).searchParams.get('v');
+    embedUrl = `https://www.youtube.com/embed/${id}`;
+  }
+  if (url.includes('youtu.be/')) {
+    const id = url.split('youtu.be/')[1].split('?')[0];
+    embedUrl = `https://www.youtube.com/embed/${id}`;
+  }
+
+  const isSpotify = embedUrl.includes('spotify.com');
+  const height = isSpotify ? 152 : 200;
+
+  return (
+    <div className="card" style={{ marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+        <Link2 size={15} style={{ color: 'var(--accent2)' }} />
+        <span className="fw-600 text-sm">Listen</span>
+      </div>
+      <iframe
+        src={embedUrl}
+        width="100%"
+        height={height}
+        frameBorder="0"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy"
+        style={{ borderRadius: 12 }}
+        title="Music player"
+      />
+    </div>
+  );
+}
 
 export default function ArtistProfile() {
   const { id } = useParams();
@@ -180,7 +219,7 @@ export default function ArtistProfile() {
                   <div className="text-xs text-muted">Followers</div>
                 </div>
                 <div className="text-center">
-                  <div className="fw-700 text-green">₹{(artist.earnings / 1000).toFixed(0)}K</div>
+                  <div className="fw-700 text-green">${artist.earnings.toLocaleString()}</div>
                   <div className="text-xs text-muted">Earned</div>
                 </div>
                 <div className="text-center">
@@ -229,6 +268,10 @@ export default function ArtistProfile() {
               </div>
             ))}
           </div>
+        )}
+
+        {artist.musicUrl && (
+          <MusicEmbed url={artist.musicUrl} />
         )}
 
         {!currentUser && (

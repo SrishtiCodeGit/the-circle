@@ -1,7 +1,10 @@
-import { useState } from 'react';
-import { Users, MapPin, Music, Plus } from 'lucide-react';
-import { MOCK_COLLABS, GENRES, INSTRUMENTS, CITIES } from '../data/mockData';
+import { useState, useEffect } from 'react';
+import { Users, MapPin, Plus } from 'lucide-react';
+import { MOCK_COLLABS, GENRES, INSTRUMENTS } from '../data/mockData';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
+import { db } from '../firebase';
+import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
 import './Collaborations.css';
 
@@ -26,9 +29,12 @@ function WizardDots({ step, total }) {
 }
 
 function PostCollabModal({ onClose }) {
+  const { currentUser, userProfile } = useAuth();
+  const toast = useToast();
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState('forward');
   const [animating, setAnimating] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [title, setTitle] = useState('');
   const [projectType, setProjectType] = useState('');
@@ -54,6 +60,32 @@ function PostCollabModal({ onClose }) {
     setDirection('backward');
     setAnimating(true);
     setTimeout(() => { setStep(s => s - 1); setAnimating(false); }, 280);
+  }
+
+  async function handlePost() {
+    if (!title) { toast.error('Please add a title.'); return; }
+    setLoading(true);
+    const collab = {
+      title,
+      type: projectType,
+      genres: genres.split(',').map(g => g.trim()).filter(Boolean),
+      seeking,
+      location: location || 'Remote',
+      compensation,
+      desc,
+      postedBy: userProfile?.displayName || currentUser.email,
+      uid: currentUser.uid,
+      posted: new Date().toISOString().slice(0, 10),
+      createdAt: serverTimestamp(),
+    };
+    try {
+      await addDoc(collection(db, 'collabs'), collab);
+      toast.success('Collab request posted!');
+      onClose();
+    } catch {
+      toast.error('Could not post. Check your connection.');
+    }
+    setLoading(false);
   }
 
   const animClass = animating
@@ -106,7 +138,7 @@ function PostCollabModal({ onClose }) {
               </div>
               <div className="form-group">
                 <label>Location / Remote</label>
-                <input placeholder="Mumbai / Remote" value={location} onChange={e => setLocation(e.target.value)} />
+                <input placeholder="New York / Remote" value={location} onChange={e => setLocation(e.target.value)} />
               </div>
               <div className="form-group">
                 <label>Compensation</label>
@@ -127,7 +159,7 @@ function PostCollabModal({ onClose }) {
                   <div className="text-xs text-muted mb-1">Preview</div>
                   <div className="fw-700 text-sm">{title}</div>
                   {projectType && <div className="text-xs text-muted mt-1">{projectType} · {genres}</div>}
-                  <div className="text-xs text-muted mt-1">{location || 'Location TBD'} · {compensation || 'Compensation TBD'}</div>
+                  <div className="text-xs text-muted mt-1">{location || 'Remote'} · {compensation || 'Compensation TBD'}</div>
                   {seeking.length > 0 && (
                     <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
                       {seeking.map(s => <span key={s} className="tag tag-purple" style={{ fontSize: '0.72rem' }}>{s}</span>)}
@@ -144,7 +176,9 @@ function PostCollabModal({ onClose }) {
           {step > 1 && <button className="btn btn-outline" onClick={goBack}>Back</button>}
           {step < 3
             ? <button className="btn btn-primary" onClick={goNext}>Next →</button>
-            : <button className="btn btn-primary" onClick={onClose}>Post to The Circle</button>
+            : <button className="btn btn-primary" onClick={handlePost} disabled={loading}>
+                {loading ? 'Posting…' : 'Post to The Circle'}
+              </button>
           }
         </div>
       </div>
@@ -156,9 +190,22 @@ export default function Collaborations() {
   const { currentUser } = useAuth();
   const [genreFilter, setGenreFilter] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [liveCollabs, setLiveCollabs] = useState([]);
+  const [loadingCollabs, setLoadingCollabs] = useState(true);
 
-  const filtered = MOCK_COLLABS.filter(c =>
-    !genreFilter || c.genres.includes(genreFilter)
+  useEffect(() => {
+    const q = query(collection(db, 'collabs'), orderBy('createdAt', 'desc'));
+    const unsub = onSnapshot(q, snap => {
+      setLiveCollabs(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      setLoadingCollabs(false);
+    }, () => setLoadingCollabs(false));
+    return unsub;
+  }, []);
+
+  const allCollabs = liveCollabs.length > 0 ? [...liveCollabs, ...MOCK_COLLABS] : MOCK_COLLABS;
+
+  const filtered = allCollabs.filter(c =>
+    !genreFilter || (c.genres || []).includes(genreFilter)
   );
 
   return (
@@ -180,6 +227,10 @@ export default function Collaborations() {
           {GENRES.map(g => <option key={g}>{g}</option>)}
         </select>
       </div>
+
+      {loadingCollabs && (
+        <div className="text-muted text-sm" style={{ padding: '1rem 0' }}>Loading collabs…</div>
+      )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {filtered.map(collab => (
@@ -203,8 +254,8 @@ export default function Collaborations() {
             <div className="flex-between mt-2" style={{ flexWrap: 'wrap', gap: '0.5rem' }}>
               <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', alignItems: 'center' }}>
                 <span className="text-xs text-muted">Seeking:</span>
-                {collab.seeking.map(s => <span key={s} className="tag tag-purple">{s}</span>)}
-                {collab.genres.map(g => <span key={g} className="tag">{g}</span>)}
+                {(collab.seeking || []).map(s => <span key={s} className="tag tag-purple">{s}</span>)}
+                {(collab.genres || []).map(g => <span key={g} className="tag">{g}</span>)}
               </div>
               <div className="flex-center gap-2">
                 <span className="text-xs text-muted">{collab.compensation}</span>
@@ -218,7 +269,7 @@ export default function Collaborations() {
         ))}
       </div>
 
-      {filtered.length === 0 && (
+      {filtered.length === 0 && !loadingCollabs && (
         <div className="empty-state">
           <Users size={40} />
           <p>No collab requests match your filters.</p>

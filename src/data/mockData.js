@@ -16,6 +16,7 @@ export const MOCK_ARTISTS = [
     avatar: 'https://i.pravatar.cc/150?img=11',
     initials: 'AM',
     portfolio: [{ title: 'Midnight Stories', type: 'single', year: 2023 }],
+    musicUrl: 'https://open.spotify.com/embed/track/3n3Ppam7vgaVa1iaRUIOKE',
     open: true,
   },
   {
@@ -31,6 +32,7 @@ export const MOCK_ARTISTS = [
     avatar: 'https://i.pravatar.cc/150?img=47',
     initials: 'PS',
     portfolio: [{ title: 'Neon Signals EP', type: 'EP', year: 2024 }],
+    musicUrl: 'https://open.spotify.com/embed/track/0VjIjW4GlUZAMYd2vXMi3b',
     open: true,
   },
   {
