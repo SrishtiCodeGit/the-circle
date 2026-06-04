@@ -57,7 +57,7 @@ function SpotlightCard({ artist, style, animDelay }) {
       style={{
         top: style.top,
         left: style.left,
-        transform: `rotate(${style.rotate}deg)`,
+        '--rotate': `${style.rotate}deg`,
         zIndex: style.zIndex,
         animationDelay: animDelay,
       }}

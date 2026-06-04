@@ -66,7 +66,7 @@ export default function GigBoard() {
           {GIG_TYPES.map(t => <option key={t}>{t}</option>)}
         </select>
         <select value={cityFilter} onChange={e => setCityFilter(e.target.value)}>
-          <option value="">All Cities</option>
+          <option value="">All Locations</option>
           <option value="Remote">Remote</option>
           {CITIES.map(c => <option key={c}>{c}</option>)}
         </select>
