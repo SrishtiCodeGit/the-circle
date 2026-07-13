@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Compass, Briefcase, Users, Star, TrendingUp, Shield, ArrowRight, Zap, MapPin, CheckCircle } from 'lucide-react';
+import { Compass, Briefcase, Users, Star, TrendingUp, Shield, ArrowRight, Zap, CheckCircle } from 'lucide-react';
 import AnimatedWave from '../components/AnimatedWave';
 import ActivityTicker from '../components/ActivityTicker';
 import Logo from '../components/Logo';
 import { useReveal } from '../hooks/useReveal';
 import { useCounter } from '../hooks/useCounter';
-import { MOCK_ARTISTS } from '../data/mockData';
 import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import './Home.css';
@@ -32,13 +31,86 @@ const TESTIMONIALS = [
   { name:'Kabir Nair',   role:'Jazz Drummer, New York',         quote:'Finally a platform built for serious musicians, not just influencers. This is the real deal.',        initials:'KN', color:'#059669', avatar:'https://i.pravatar.cc/150?img=12' },
 ];
 
-// spotlight artists: a2 (Priya), a1 (Aryan), a4 (Sneha)
-const SPOTLIGHT_IDS = ['a2', 'a1', 'a4'];
-const SPOTLIGHT_STYLES = [
-  { top: 10,   left: 30,  rotate: -3, zIndex: 1, animDelay: '0s' },
-  { top: 150,  left: 70,  rotate:  1, zIndex: 2, animDelay: '1.3s' },
-  { top: 295,  left: 20,  rotate: -1, zIndex: 1, animDelay: '2.6s' },
+const ORBIT_NODES = [
+  { label: 'Folk',       sub: 'London',    color: '#7c3aed', r: 130, start:   0, dur: '20s', dir: 'normal' },
+  { label: 'Electronic', sub: 'Berlin',    color: '#06b6d4', r: 130, start:  72, dur: '20s', dir: 'normal' },
+  { label: 'Jazz',       sub: 'New York',  color: '#f59e0b', r: 130, start: 144, dur: '20s', dir: 'normal' },
+  { label: 'R&B',        sub: 'Lagos',     color: '#ec4899', r: 130, start: 216, dur: '20s', dir: 'normal' },
+  { label: 'Hip-Hop',    sub: 'Los Angeles', color: '#10b981', r: 130, start: 288, dur: '20s', dir: 'normal' },
+  { label: 'Indie',      sub: 'Seoul',     color: '#a855f7', r: 195, start:  36, dur: '32s', dir: 'reverse' },
+  { label: 'Classical',  sub: 'Vienna',    color: '#3b82f6', r: 195, start: 180, dur: '32s', dir: 'reverse' },
 ];
+
+const EQ_BARS = [
+  { min: 8,  max: 28, spd: '0.55s' },
+  { min: 14, max: 32, spd: '0.7s'  },
+  { min: 6,  max: 22, spd: '0.45s' },
+  { min: 10, max: 30, spd: '0.9s'  },
+  { min: 16, max: 32, spd: '0.6s'  },
+  { min: 8,  max: 26, spd: '0.8s'  },
+  { min: 12, max: 28, spd: '0.5s'  },
+  { min: 6,  max: 20, spd: '1.0s'  },
+  { min: 14, max: 30, spd: '0.65s' },
+  { min: 10, max: 24, spd: '0.75s' },
+];
+
+function HeroVisual() {
+  return (
+    <div className="hero-visual">
+      {/* Rings */}
+      <div className="hv-ring hv-ring-1" />
+      <div className="hv-ring hv-ring-2" />
+      <div className="hv-ring hv-ring-3" />
+
+      {/* Orbit nodes */}
+      <div className="hv-orbit">
+        {ORBIT_NODES.map(node => (
+          <div
+            key={node.label}
+            className="hv-node"
+            style={{
+              '--start': `${node.start}deg`,
+              '--r': `${node.r}px`,
+              '--dur': node.dur,
+              '--dir': node.dir,
+            }}
+          >
+            <div
+              className={`hv-node-inner${node.dir === 'reverse' ? ' hv-node-inner--rev' : ''}`}
+              style={{ '--color': node.color, '--dur': node.dur }}
+            >
+              <span className="hv-node-dot" style={{ '--color': node.color }} />
+              <span className="hv-node-label">{node.label}</span>
+              <span className="hv-node-sub">{node.sub}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Central core */}
+      <div className="hv-center">
+        <div className="hv-core">♪</div>
+      </div>
+
+      {/* Floating notes */}
+      <span className="hv-note" style={{ top: '8%',  left: '12%', '--d': '4.5s', '--delay': '0s'   }}>♫</span>
+      <span className="hv-note" style={{ top: '15%', right: '8%', '--d': '6s',   '--delay': '1.2s' }}>♩</span>
+      <span className="hv-note" style={{ bottom: '20%', left: '6%', '--d': '5s', '--delay': '2.5s' }}>♪</span>
+      <span className="hv-note" style={{ bottom: '12%', right: '10%', '--d': '7s', '--delay': '0.8s' }}>♬</span>
+
+      {/* EQ bars */}
+      <div className="hv-eq">
+        {EQ_BARS.map((b, i) => (
+          <div
+            key={i}
+            className="hv-eq-bar"
+            style={{ '--min': `${b.min}px`, '--max': `${b.max}px`, '--spd': b.spd, animationDelay: `${i * 0.1}s` }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function WaitlistBar() {
   const [email, setEmail] = useState('');
@@ -109,59 +181,10 @@ function StatCounter({ target, prefix='', suffix='' }) {
   return <span ref={ref}>{prefix}{count.toLocaleString('en-IN')}{suffix}</span>;
 }
 
-function SpotlightCard({ artist, style, animDelay }) {
-  const genreColorMap = {
-    'Folk': '#7c3aed', 'Indie': '#7c3aed',
-    'Electronic': '#06b6d4', 'Ambient': '#06b6d4',
-    'Jazz': '#f59e0b', 'Fusion': '#f59e0b',
-    'Hip-Hop': '#ec4899', 'R&B': '#ec4899',
-    'Classical': '#10b981',
-    'Metal': '#ef4444', 'Rock': '#ef4444',
-  };
-  return (
-    <div
-      className="spotlight-card"
-      style={{
-        top: style.top,
-        left: style.left,
-        '--rotate': `${style.rotate}deg`,
-        zIndex: style.zIndex,
-        animationDelay: animDelay,
-      }}
-    >
-      <div className="spotlight-card-inner">
-        {artist.avatar ? (
-          <img
-            src={artist.avatar}
-            alt={artist.displayName}
-            style={{ width: 60, height: 60, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--border2)', flexShrink: 0 }}
-          />
-        ) : (
-          <div className="avatar" style={{ width: 60, height: 60, fontSize: 20 }}>{artist.initials}</div>
-        )}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontWeight: 700, fontSize: '0.9rem', letterSpacing: '-0.01em' }}>{artist.displayName}</div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.75rem', color: 'var(--text2)', marginTop: 2 }}>
-            <MapPin size={10} /> {artist.location}
-          </div>
-          <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap', marginTop: '0.4rem' }}>
-            {artist.genres.map(g => (
-              <span key={g} style={{ fontSize: '0.65rem', padding: '0.1rem 0.45rem', borderRadius: 999, background: `${genreColorMap[g] || '#7c3aed'}22`, color: genreColorMap[g] || '#7c3aed', fontWeight: 600 }}>{g}</span>
-            ))}
-            {artist.open && <span style={{ fontSize: '0.65rem', padding: '0.1rem 0.45rem', borderRadius: 999, background: 'rgba(16,185,129,0.15)', color: '#10b981', fontWeight: 600 }}>Open</span>}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function Home() {
   const featuresRef = useReveal();
   const stepsRef    = useReveal();
   const testimonialsRef = useReveal();
-
-  const spotlightArtists = SPOTLIGHT_IDS.map(id => MOCK_ARTISTS.find(a => a.id === id));
 
   return (
     <div className="home">
@@ -213,20 +236,9 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Right column — spotlight */}
+          {/* Right column — animated visual */}
           <div className="hero-right">
-            <div className="hero-spotlight">
-              {/* Large faded circle watermark */}
-              <div className="spotlight-watermark" />
-              {spotlightArtists.map((artist, i) => (
-                <SpotlightCard
-                  key={artist.id}
-                  artist={artist}
-                  style={SPOTLIGHT_STYLES[i]}
-                  animDelay={SPOTLIGHT_STYLES[i].animDelay}
-                />
-              ))}
-            </div>
+            <HeroVisual />
           </div>
         </div>
       </section>

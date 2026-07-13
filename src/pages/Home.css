@@ -100,51 +100,146 @@
   animation: fadeIn 1s ease 0.6s both;
 }
 
-/* ── Spotlight panel ── */
-.hero-spotlight {
+/* ── Hero Visual ── */
+.hero-visual {
   position: relative;
+  width: 420px;
   height: 420px;
-  width: 100%;
+  flex-shrink: 0;
 }
 
-.spotlight-watermark {
+/* Central pulsing core */
+.hv-center {
   position: absolute;
-  width: 300px;
-  height: 300px;
-  border: 2px solid rgba(168, 85, 247, 0.12);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+}
+
+.hv-core {
+  width: 88px; height: 88px;
   border-radius: 50%;
-  top: 50%;
-  left: 50%;
+  background: linear-gradient(135deg, var(--accent), #a855f7, #ec4899);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.2rem;
+  box-shadow: 0 0 40px rgba(124,58,237,0.5), 0 0 80px rgba(168,85,247,0.2);
+  position: relative; z-index: 2;
+  animation: corePulse 3s ease-in-out infinite;
+}
+
+@keyframes corePulse {
+  0%, 100% { box-shadow: 0 0 40px rgba(124,58,237,0.5), 0 0 80px rgba(168,85,247,0.2); }
+  50%       { box-shadow: 0 0 60px rgba(124,58,237,0.7), 0 0 120px rgba(168,85,247,0.35); }
+}
+
+/* Expanding rings */
+.hv-ring {
+  position: absolute; top: 50%; left: 50%;
+  border-radius: 50%;
+  border: 1px solid rgba(168,85,247,0.15);
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
+.hv-ring-1 { width: 160px; height: 160px; border-color: rgba(168,85,247,0.22); animation: ringPulse 4s ease-in-out infinite; }
+.hv-ring-2 { width: 260px; height: 260px; border-color: rgba(168,85,247,0.13); animation: ringPulse 4s ease-in-out infinite 0.6s; }
+.hv-ring-3 { width: 370px; height: 370px; border-color: rgba(168,85,247,0.07); animation: ringPulse 4s ease-in-out infinite 1.2s; }
 
-.spotlight-card {
+@keyframes ringPulse {
+  0%, 100% { opacity: 0.6; transform: translate(-50%,-50%) scale(1); }
+  50%       { opacity: 1;   transform: translate(-50%,-50%) scale(1.03); }
+}
+
+/* Orbit nodes */
+.hv-orbit {
+  position: absolute; top: 50%; left: 50%;
+  width: 0; height: 0;
+}
+
+.hv-node {
   position: absolute;
+  transform-origin: 0 0;
+  animation: orbit var(--dur, 18s) linear infinite var(--dir, normal);
+}
+
+@keyframes orbit {
+  from { transform: rotate(var(--start, 0deg)) translateX(var(--r, 130px)) rotate(calc(-1 * var(--start, 0deg))); }
+  to   { transform: rotate(calc(var(--start, 0deg) + 360deg)) translateX(var(--r, 130px)) rotate(calc(-1 * (var(--start, 0deg) + 360deg))); }
+}
+
+.hv-node-inner {
+  transform: translate(-50%, -50%);
+  width: 72px; height: 72px;
+  border-radius: 50%;
   background: var(--bg2);
-  border: 1px solid var(--border2);
-  border-radius: 16px;
-  padding: 1rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(8px);
-  width: 280px;
-  animation: float 4s ease-in-out infinite;
-  transition: box-shadow 0.2s;
+  border: 2px solid var(--color, rgba(168,85,247,0.4));
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  box-shadow: 0 0 18px color-mix(in srgb, var(--color, #7c3aed) 30%, transparent), 0 4px 16px rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
+  animation: counterOrbit var(--dur, 18s) linear infinite var(--dir, normal);
 }
 
-.spotlight-card:hover {
-  box-shadow: 0 12px 40px rgba(124, 58, 237, 0.2);
+@keyframes counterOrbit {
+  from { transform: translate(-50%,-50%) rotate(0deg); }
+  to   { transform: translate(-50%,-50%) rotate(-360deg); }
+}
+@keyframes counterOrbitRev {
+  from { transform: translate(-50%,-50%) rotate(0deg); }
+  to   { transform: translate(-50%,-50%) rotate(360deg); }
+}
+.hv-node-inner--rev {
+  animation-name: counterOrbitRev;
 }
 
-.spotlight-card-inner {
+.hv-node-dot { display: none; }
+.hv-node-label {
+  font-size: 0.65rem; font-weight: 800; color: var(--color, #7c3aed);
+  letter-spacing: 0.01em; text-align: center; line-height: 1;
+}
+.hv-node-sub {
+  font-size: 0.58rem; color: var(--text2); text-align: center; line-height: 1;
+}
+
+/* Floating music notes */
+.hv-note {
+  position: absolute;
+  font-size: 1.4rem;
+  opacity: 0.18;
+  color: var(--accent2);
+  animation: floatNote var(--d, 5s) ease-in-out infinite var(--delay, 0s);
+  pointer-events: none;
+  user-select: none;
+}
+@keyframes floatNote {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.18; }
+  50%       { transform: translateY(-14px) rotate(8deg); opacity: 0.32; }
+}
+
+/* Eq bars at bottom of visual */
+.hv-eq {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  align-items: flex-end;
+  gap: 4px;
+  height: 32px;
+  opacity: 0.5;
+}
+.hv-eq-bar {
+  width: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to top, var(--accent), #ec4899);
+  animation: eqBar var(--spd, 0.8s) ease-in-out infinite alternate;
+}
+@keyframes eqBar {
+  from { height: var(--min, 6px); }
+  to   { height: var(--max, 24px); }
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0) rotate(var(--rotate, 0deg)); }
-  50%       { transform: translateY(-10px) rotate(var(--rotate, 0deg)); }
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
 }
 
 /* ── Stats strip ── */
